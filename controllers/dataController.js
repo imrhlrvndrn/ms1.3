@@ -1,16 +1,13 @@
 const axios = require('axios');
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000/api/v1',
+  baseURL: process.env.MICROSERVICE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    CLIENT_KEY: '4ccd21d8-c02f-4a33-b7e9-afe520204eed',
-    CLIENT_SECRET: '0290f1b7-eadf-411d-8be1-b01355fdd483a',
+    CLIENT_KEY: process.env.CLIENT_KEY,
+    CLIENT_SECRET: process.env.CLIENT_SECRET,
   },
 });
-
-// const MICROSERVICE_BASE_URL = 'https://trip-planner-invact.vercel.app/api/v1'; // Replace with actual URL
-// const MICROSERVICE_BASE_URL = 'http://localhost:8000/api/v1'; // Replace with actual
 
 const getFlights = async (req, res) => {
   try {
@@ -28,9 +25,22 @@ const getFlights = async (req, res) => {
   }
 };
 
+const getFlightsByOriginAndDestination = async (req, res) => {
+  const { origin, destination } = req.query;
+  try {
+    const response = await axiosInstance.get(
+      `/flights/search?origin=${origin}&destination=${destination}`
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch hotels' });
+  }
+};
+
 const getHotels = async (req, res) => {
   try {
-    const response = await axios.get(`${MICROSERVICE_BASE_URL}/hotels`);
+    const response = await axiosInstance.get(`/hotels`);
     res.json(response.data);
   } catch (error) {
     console.error(error);
@@ -40,7 +50,7 @@ const getHotels = async (req, res) => {
 
 const getSites = async (req, res) => {
   try {
-    const response = await axios.get(`${MICROSERVICE_BASE_URL}/sites`);
+    const response = await axiosInstance.get(`/sites`);
     res.json(response.data);
   } catch (error) {
     console.error(error);
@@ -48,4 +58,4 @@ const getSites = async (req, res) => {
   }
 };
 
-module.exports = { getFlights, getHotels, getSites };
+module.exports = { getFlights, getFlightsByOriginAndDestination, getHotels, getSites };

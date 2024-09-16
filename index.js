@@ -2,7 +2,12 @@ const cors = require('cors');
 const express = require('express');
 require('dotenv').config();
 const { createItinerary, getItinerary } = require('./controllers/itineraryController');
-const { getFlights, getHotels, getSites } = require('./controllers/dataController');
+const {
+  getFlights,
+  getHotels,
+  getSites,
+  getFlightsByOriginAndDestination,
+} = require('./controllers/dataController');
 const app = express();
 const { sequelize } = require('./models');
 
@@ -13,6 +18,7 @@ app.post('/itineraries/', createItinerary);
 app.get('/itineraries/:id', getItinerary);
 
 app.get('/data/flights', getFlights);
+app.get('/data/flights/search', getFlightsByOriginAndDestination);
 app.get('/data/hotels', getHotels);
 app.get('/data/sites', getSites);
 
