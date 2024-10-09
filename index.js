@@ -7,6 +7,8 @@ const {
   getHotels,
   getSites,
   getFlightsByOriginAndDestination,
+  getHotelsByLocation,
+  getSitesByLocation,
 } = require('./controllers/dataController');
 const app = express();
 const { sequelize } = require('./models');
@@ -20,7 +22,9 @@ app.get('/itineraries/:id', getItinerary);
 app.get('/data/flights', getFlights);
 app.get('/data/flights/search', getFlightsByOriginAndDestination);
 app.get('/data/hotels', getHotels);
+app.get('/data/hotels/search', getHotelsByLocation);
 app.get('/data/sites', getSites);
+app.get('/data/sites/search', getSitesByLocation);
 
 sequelize
   .authenticate()

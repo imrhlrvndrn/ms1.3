@@ -11,12 +11,7 @@ const axiosInstance = axios.create({
 
 const getFlights = async (req, res) => {
   try {
-    const response = await axiosInstance.get(`/flights`, {
-      headers: {
-        CLIENT_KEY: process.env.CLIENT_KEY,
-        CLIENT_SECRET: process.env.CLIENT_SECRET,
-      },
-    });
+    const response = await axiosInstance.get(`/flights`, {});
     // const response = await axios.get(`https://jsonplaceholder.typicode.com/todos/1`);
     res.json(response.data);
   } catch (error) {
@@ -47,6 +42,22 @@ const getHotels = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch hotels' });
   }
 };
+const getHotelsByLocation = async (req, res) => {
+  const { location } = req.query;
+
+  // Input validation
+  if (!location) {
+    return res.status(400).json({ error: 'Location is required.' });
+  }
+
+  try {
+    const response = await axiosInstance.get(`/hotels/search?location=${location}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch hotels' });
+  }
+};
 
 const getSites = async (req, res) => {
   try {
@@ -58,4 +69,30 @@ const getSites = async (req, res) => {
   }
 };
 
-module.exports = { getFlights, getFlightsByOriginAndDestination, getHotels, getSites };
+const getSitesByLocation = async (req, res) => {
+  const { location } = req.query;
+
+  // Input validation
+  if (!location) {
+    return res.status(400).json({ error: 'Location is required.' });
+  }
+
+  try {
+    const response = await axiosInstance.get(
+      `/sites/search?location=${encodeURIComponent(location)}`
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch sites' });
+  }
+};
+
+module.exports = {
+  getSites,
+  getHotels,
+  getFlights,
+  getSitesByLocation,
+  getHotelsByLocation,
+  getFlightsByOriginAndDestination,
+};
