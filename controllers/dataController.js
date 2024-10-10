@@ -1,4 +1,9 @@
 const axios = require('axios');
+const {
+  validateFlightQueryParams,
+  validateHotelQueryParams,
+  validateSiteQueryParams,
+} = require('../validators');
 
 const axiosInstance = axios.create({
   baseURL: process.env.MICROSERVICE_BASE_URL,
@@ -21,6 +26,9 @@ const getFlights = async (req, res) => {
 };
 
 const getFlightsByOriginAndDestination = async (req, res) => {
+  const errors = validateFlightQueryParams(req.query);
+  if (errors.length > 0) return res.status(400).json({ errors });
+
   const { origin, destination } = req.query;
   try {
     const response = await axiosInstance.get(
@@ -43,6 +51,9 @@ const getHotels = async (req, res) => {
   }
 };
 const getHotelsByLocation = async (req, res) => {
+  const errors = validateHotelQueryParams(req.query);
+  if (errors.length > 0) return res.status(400).json({ errors });
+
   const { location } = req.query;
 
   // Input validation
@@ -70,6 +81,9 @@ const getSites = async (req, res) => {
 };
 
 const getSitesByLocation = async (req, res) => {
+  const errors = validateSiteQueryParams(req.query);
+  if (errors.length > 0) return res.status(400).json({ errors });
+
   const { location } = req.query;
 
   // Input validation
